@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 设置基础URL，确保所有相对路径都从项目根目录解析 -->
+    <base href="/ArtGallery/">
+    <title>Asuka's 3D Art Gallery</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* 3D 滑块专属样式 - 超强空间感 + 丝滑动画 */
+        .slider-3d-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            perspective: 1500px; /* 加强 3D 透视 */
+            cursor: grab;
+            user-select: none;
+        }
+        .slider-3d {
+            position: relative;
+            width: 500px;
+            height: 700px;
+            transform-style: preserve-3d;
+        }
+        /* 3D 图片卡片 - 空间堆叠 */
+        .slider-3d-item {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            backface-visibility: hidden;
+            /* 核心丝滑动画 */
+            transition: all 1s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+        }
+        .slider-3d-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        /* 3D 堆叠层级（纵深空间感） */
+        .slider-3d-item:nth-child(1) { transform: translateZ(0px) scale(1); opacity: 1; z-index: 10; }
+        .slider-3d-item:nth-child(2) { transform: translateZ(-120px) scale(0.9); opacity: 0.9; z-index: 9; }
+        .slider-3d-item:nth-child(3) { transform: translateZ(-240px) scale(0.8); opacity: 0.8; z-index: 8; }
+        .slider-3d-item:nth-child(4) { transform: translateZ(-360px) scale(0.7); opacity: 0.7; z-index: 7; }
+        .slider-3d-item:nth-child(n+5) { transform: translateZ(-480px) scale(0.6); opacity: 0.5; z-index: 6; }
+
+        /* ✅ 向下滚动：放大淡出动画 */
+        .slider-3d-item.fly-out {
+            transform: translateZ(800px) scale(2.5);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* ✅ 向上滚动：缩小淡入动画 */
+        .slider-3d-item.fly-in {
+            transform: translateZ(0px) scale(1);
+            opacity: 1;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 767px) {
+            .slider-3d { width: 80vw; height: 60vh; }
+            .slider-3d-container { height: 90vh; }
+        }
+
+        /* 提示文字动画 */
+        .slider-tip {
+            position: absolute;
+            bottom: 80px;
+            color: var(--text);
+            font-size: 16px;
+            text-align: center;
+            animation: tipFade 2s infinite alternate;
+        }
+        @keyframes tipFade {
+            from { opacity: 0.5; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 3D 页面导航 */
+        .nav-3d {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 200;
+        }
+        .nav-3d ul {
+            list-style: none;
+            display: flex;
+            gap: 15px;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-3d a,
+        .nav-3d button {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .nav-3d a:hover,
+        .nav-3d button:hover,
+        .nav-3d a.active {
+            background: rgba(0, 0, 0, 0.8);
+        }
+    </style>
+</head>
+<body>
+<!-- 3D 页面导航 -->
+<nav class="nav-3d">
+    <ul>
+        <li><button id="themeBtn">切换主题</button></li>
+    </ul>
+</nav>
+
+<!-- 3D 堆叠滑块核心区域 -->
+<section class="slider-3d-container" id="slider3DContainer">
+    <div class="slider-3d" id="slider3D"></div>
+    <div class="slider-tip">Scroll Up / Down to Switch | Slide for Mobile</div>
+</section>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-logo">🎨 Asuka's Copy Painting Portfolio</div>
+        <div class="footer-contact">
+            <div><i>💬</i> QQ: 1946620514</div>
+            <div><i>📧</i> Email: 23069100154@stu.xidian.edu.cn</div>
+        </div>
+        <div class="footer-copyright">© 2026 All Rights Reserved</div>
+    </div>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/main.js"></script>
+<script>
+    // ==================== 3D 滑块核心逻辑 ====================
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. 截取 college 最后 15 张作品
+        const collegeWorks = artWorks.filter(item => item.type === 'college');
+        const last15CollegeWorks = collegeWorks.slice(-15);
+        const slider3D = document.getElementById('slider3D');
+        let currentIndex = 0;
+        let isAnimating = false;
+
+        // 2. 渲染 3D 图片
+        function render3DSlider() {
+            if (!slider3D) return;
+            slider3D.innerHTML = '';
+            last15CollegeWorks.forEach((item) => {
+                const div = document.createElement('div');
+                div.className = 'slider-3d-item';
+                div.innerHTML = `<img src="${getImgSrc(item)}" alt="${item.name}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjEwMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSIxMDAwIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNDAwIiB5PSI1MDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzY2NiI+SW1hZ2UgTm90IEZvdW5kPC90ZXh0Pjwvc3ZnPg=='">`;
+                slider3D.appendChild(div);
+            });
+        }
+
+        // 3. ✅ 下一张：放大淡出
+        function slideNext() {
+            if (isAnimating || !slider3D || currentIndex >= last15CollegeWorks.length - 1) return;
+            isAnimating = true;
+            const items = document.querySelectorAll('.slider-3d-item');
+            // 当前图片放大淡出
+            items[currentIndex].classList.add('fly-out');
+
+            setTimeout(() => {
+                currentIndex++;
+                isAnimating = false;
+            }, 900);
+        }
+
+        // 4. ✅ 上一张：缩小淡入
+        function slidePrev() {
+            if (isAnimating || !slider3D || currentIndex <= 0) return;
+            isAnimating = true;
+            currentIndex--;
+            const items = document.querySelectorAll('.slider-3d-item');
+            // 回归图片缩小淡入
+            items[currentIndex].classList.remove('fly-out');
+
+            setTimeout(() => {
+                isAnimating = false;
+            }, 900);
+        }
+
+        // 5. 桌面端：滚轮触发
+        const container = document.getElementById('slider3DContainer');
+        if (container) {
+            container.addEventListener('wheel', (e) => {
+                e.preventDefault(); // 禁止页面滚动
+                if (e.deltaY > 0) {
+                    slideNext();
+                } else {
+                    slidePrev();
+                }
+            });
+        }
+
+        // 6. 移动端：滑动触发
+        let touchStartY = 0;
+        if (container) {
+            container.addEventListener('touchstart', (e) => {
+                touchStartY = e.changedTouches[0].screenY;
+            });
+            container.addEventListener('touchend', (e) => {
+                const touchEndY = e.changedTouches[0].screenY;
+                const diff = touchStartY - touchEndY;
+                if (diff > 50) slideNext();    // 上滑 → 下一张
+                if (diff < -50) slidePrev();   // 下滑 → 上一张
+            });
+        }
+
+        // 修复主题切换
+        const themeBtn = document.getElementById('themeBtn');
+        if (themeBtn) {
+            themeBtn.addEventListener("click", () => {
+                document.body.classList.toggle("dark");
+                localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+            });
+        }
+
+        // 初始化
+        render3DSlider();
+    });
+</script>
+</body>
+</html>

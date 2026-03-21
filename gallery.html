@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 设置基础URL，确保所有相对路径都从项目根目录解析 -->
+    <base href="/ArtGallery/">
+    <title>作品展示 - 我的美术作品集</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header>
+    <h1>个人美术作品展示</h1>
+    <nav>
+        <ul>
+            <li><a href="index.html">返回首页</a></li>
+            <li><button class="tab-btn active" data-tab="middle">high school level</button></li>
+            <li><button class="tab-btn" data-tab="college">college level</button></li>
+            <li><button id="themeBtn">切换主题</button></li>
+        </ul>
+    </nav>
+</header>
+
+<!-- 轮播图 -->
+<section class="slider-container">
+    <button class="slider-btn prev" onclick="prevSlide()">←</button>
+    <div class="slider" id="slider"></div>
+    <button class="slider-btn next" onclick="nextSlide()">→</button>
+</section>
+
+<!-- 作品列表 -->
+<section class="gallery">
+    <h2>作品展示</h2>
+    <div class="grid-container" id="artGrid"></div>
+</section>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-logo">🎨 Asuka's Copy Painting Portfolio</div>
+        <div class="footer-contact">
+            <div><i>💬</i> QQ: 1946620514</div>
+            <div><i>📧</i> Email: 23069100154@stu.xidian.edu.cn</div>
+        </div>
+        <div class="footer-copyright">
+            © 2026 All Rights Reserved | Personal Art Exhibition
+        </div>
+    </div>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

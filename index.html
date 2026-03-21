@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 设置基础URL，确保所有相对路径都从项目根目录解析 -->
+    <base href="/ArtGallery/">
+    <title>我的美术作品集</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* 沉浸式展示 college_37 */
+        .immersive-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .immersive-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+        .immersive-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 40px 20px 20px;
+            color: white;
+            text-align: center;
+        }
+        .enter-gallery-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 15px 40px;
+            font-size: 18px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .immersive-container:hover .enter-gallery-btn {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .enter-gallery-btn:hover {
+            background: white;
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+        .nav-overlay {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+        .nav-overlay ul {
+            list-style: none;
+            display: flex;
+            gap: 15px;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-overlay a,
+        .nav-overlay button {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .nav-overlay a:hover,
+        .nav-overlay button:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+        .gallery-section {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 30px;
+            text-align: center;
+        }
+        .gallery-nav {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .gallery-nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .gallery-nav a,
+        .gallery-nav button {
+            padding: 8px 14px;
+            border: none;
+            background: none;
+            color: var(--text);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .gallery-nav a:hover,
+        .gallery-nav button:hover,
+        .gallery-nav a.active {
+            background: var(--hover);
+            color: #fff;
+        }
+        /* 轮播容器样式 */
+        .slider-container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+            overflow: hidden;
+            border-radius: 12px;
+            position: relative;
+            aspect-ratio: 16/9;
+        }
+        .slider {
+            display: flex;
+            height: 100%;
+            transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        .slider img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            flex-shrink: 0;
+            background: #f0f0f0;
+        }
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #fff;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+        .slider-btn.prev { left: 10px; }
+        .slider-btn.next { right: 10px; }
+    </style>
+</head>
+<body>
+<!-- 沉浸式展示区 -->
+<section class="immersive-container" id="immersiveContainer">
+    <img src="images/college/college_37.jpg" alt="College Works 37" class="immersive-image" id="immersiveImg">
+
+    <!-- 顶部导航 -->
+    <nav class="nav-overlay">
+        <ul>
+            <li><button id="themeBtn">切换主题</button></li>
+        </ul>
+    </nav>
+
+    <!-- 中央按钮 -->
+    <button class="enter-gallery-btn" id="centerEnterBtn">进入作品展厅 →</button>
+
+    <!-- 底部信息 -->
+    <div class="immersive-overlay">
+        <h1 style="margin: 0 0 10px 0; font-size: 2.5em;">Asuka's Art Gallery</h1>
+        <p style="margin: 0; font-size: 1.2em;">个人美术作品展示</p>
+    </div>
+</section>
+
+<!-- 主题装饰元素 -->
+<div class="theme-decor">
+    <div class="sun"></div>
+    <div class="moon"></div>
+    <div class="stars" id="stars"></div>
+</div>
+
+<!-- 作品列表（初始隐藏） -->
+<section class="gallery-section" id="gallerySection" style="display: none;">
+    <div class="gallery-nav">
+        <ul>
+            <li><a href="index.html">返回首页</a></li>
+            <li><button class="tab-btn active" data-tab="middle">high school level</button></li>
+            <li><button class="tab-btn" data-tab="college">college level</button></li>
+            <li><button id="themeBtn2">切换主题</button></li>
+        </ul>
+    </div>
+
+    <!-- 轮播图 -->
+    <section class="slider-container">
+        <button class="slider-btn prev" onclick="prevSlide()">←</button>
+        <div class="slider" id="slider"></div>
+        <button class="slider-btn next" onclick="nextSlide()">→</button>
+    </section>
+
+    <!-- 作品列表 -->
+    <h2>作品展示</h2>
+    <div class="grid-container" id="artGrid"></div>
+</section>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-logo">🎨 Asuka's Copy Painting Portfolio</div>
+        <div class="footer-contact">
+            <div><i>💬</i> QQ: 1946620514</div>
+            <div><i>📧</i> Email: 23069100154@stu.xidian.edu.cn</div>
+        </div>
+        <div class="footer-copyright">
+            © 2026 All Rights Reserved | Personal Art Exhibition
+        </div>
+    </div>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
