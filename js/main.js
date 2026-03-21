@@ -521,7 +521,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 初始化 - 只在 gallery.html 页面渲染轮播和网格
-    if (slider && grid && !location.pathname.includes("detail") && !immersiveContainer) {
+    if (slider && grid) {
         renderGrid();
         renderSlider();
     }
