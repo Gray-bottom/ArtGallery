@@ -3,9 +3,14 @@ let currentTab = "college";
 let currentIndex = 0;
 let sliderInterval = null;
 
-// 图片路径
+// 图片路径处理函数 - 确保使用相对路径
 function getImgSrc(item) {
-    return item.src + ".jpg";
+    // 确保路径以./开头，使用相对路径
+    let src = item.src;
+    if (!src.startsWith('./')) {
+        src = './' + src;
+    }
+    return src + ".jpg";
 }
 
 // 缺失图片占位（纯干净 HTML，无引号冲突）
