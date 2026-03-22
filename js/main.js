@@ -228,51 +228,68 @@ document.addEventListener('DOMContentLoaded', () => {
         grid.innerHTML = "Loading...";
         const list = artWorks.filter(item => item.type === currentTab);
 
-        // 记录加载时间，加载快的排前面
-        const itemLoadData = [];
-        let finished = 0;
+        // 分批加载，避免一次性加载所有图片影响性能
+        const batchSize = 5;
+        let loadedCount = 0;
 
-        list.forEach(item => {
-            const img = new Image();
-            const startTime = performance.now();
-            img.src = getImgSrc(item);
+        function loadBatch(startIndex) {
+            const endIndex = Math.min(startIndex + batchSize, list.length);
+            const batch = list.slice(startIndex, endIndex);
 
-            img.onload = () => {
-                finished++;
-                itemLoadData.push({ item, time: performance.now() - startTime, ok: true });
-                if (finished === list.length) renderSortedGrid();
-            };
-            img.onerror = () => {
-                finished++;
-                itemLoadData.push({ item, time: performance.now() - startTime, ok: false });
-                if (finished === list.length) renderSortedGrid();
-            };
-        });
+            const itemLoadData = [];
+            let finished = 0;
 
-        // 按加载速度排序后渲染
-        function renderSortedGrid() {
-            itemLoadData.sort((a, b) => a.time - b.time);
-            grid.innerHTML = "";
+            batch.forEach(item => {
+                const img = new Image();
+                const startTime = performance.now();
+                img.src = getImgSrc(item);
 
-            itemLoadData.forEach(data => {
-                const item = data.item;
-                const card = document.createElement("div");
-                card.className = "art-card";
-
-                // ✅ 修复：加载成功正常显示，失败才显示占位
-                if (data.ok) {
-                    card.innerHTML = `
-                        <img src="${getImgSrc(item)}" alt="${item.name}">
-                        <p>${item.name}</p>
-                    `;
-                    card.onclick = () => location.href = `detail.html?id=${item.id}`;
-                } else {
-                    card.innerHTML = placeholderHTML + `<p>${item.name}</p>`;
-                    card.style.cursor = "not-allowed";
-                }
-                grid.appendChild(card);
+                img.onload = () => {
+                    finished++;
+                    itemLoadData.push({ item, time: performance.now() - startTime, ok: true });
+                    checkBatchComplete();
+                };
+                img.onerror = () => {
+                    finished++;
+                    itemLoadData.push({ item, time: performance.now() - startTime, ok: false });
+                    checkBatchComplete();
+                };
             });
+
+            function checkBatchComplete() {
+                if (finished === batch.length) {
+                    loadedCount += batch.length;
+                    // 排序并渲染当前批次的数据
+                    itemLoadData.sort((a, b) => a.time - b.time);
+
+                    itemLoadData.forEach(data => {
+                        const item = data.item;
+                        const card = document.createElement("div");
+                        card.className = "art-card";
+
+                        if (data.ok) {
+                            card.innerHTML = `
+                                <img src="${getImgSrc(item)}" alt="${item.name}" loading="lazy">
+                                <p>${item.name}</p>
+                            `;
+                            card.onclick = () => location.href = `detail.html?id=${item.id}`;
+                        } else {
+                            card.innerHTML = placeholderHTML + `<p>${item.name}</p>`;
+                            card.style.cursor = "not-allowed";
+                        }
+                        grid.appendChild(card);
+                    });
+
+                    // 继续加载下一批
+                    if (loadedCount < list.length) {
+                        setTimeout(() => loadBatch(loadedCount), 100); // 小延迟，让UI有机会更新
+                    }
+                }
+            }
         }
+
+        // 开始第一批加载
+        loadBatch(0);
     }
 
     // 4. 【修复】轮播：随机 5 张横版图 + 16:9 + 仅失效图占位
