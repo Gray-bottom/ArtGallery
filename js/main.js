@@ -535,9 +535,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     '<i>🌙</i> 日间模式' :
                     '<i>☀️</i> 夜间模式';
             }
-        });<div class="slider" id="slider"></div>  <!-- gallery.html中缺少id="slider" -->
-<div class="grid-container" id="artGrid"></div>  <!-- gallery.html中缺少id="artGrid" -->
-
+        });
     }
 
     // 更新主题按钮文本

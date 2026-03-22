@@ -20,7 +20,20 @@
             perspective: 1500px; /* 加强 3D 透视 */
             cursor: grab;
             user-select: none;
+        }// 更新主题按钮文本
+function updateThemeButtonText() {
+    const themeBtns = document.querySelectorAll('#themeBtn, #themeBtn2');
+    themeBtns.forEach(btn => {
+        if (btn) {
+            btn.innerHTML = document.body.classList.contains("dark") ?
+                '<i>🌙</i> 日间模式' :
+                '<i>☀️</i> 夜间模式';
         }
+    });<div class="slider" id="slider"></div>  <!-- gallery.html中缺少id="slider" -->
+<div class="grid-container" id="artGrid"></div>  <!-- gallery.html中缺少id="artGrid" -->
+
+}
+
         .slider-3d {
             position: relative;
             width: 500px;
