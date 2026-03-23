@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 设置基础URL，确保所有相对路径都从项目根目录解析 -->
-    <base href="/ArtGallery/">
     <title>Asuka's 3D Art Gallery</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="./css/style.css">
     <style>
-        /* 3D 滑块专属样式 - 超强空间感 + 丝滑动画 */
-        .slider-3d-container {
+        /* 全屏3D画廊容器 */
+        .gallery-3d-container {
             position: relative;
             width: 100vw;
             height: 100vh;
@@ -17,95 +15,112 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            perspective: 1500px; /* 加强 3D 透视 */
-            cursor: grab;
-            user-select: none;
-        }// 更新主题按钮文本
-function updateThemeButtonText() {
-    const themeBtns = document.querySelectorAll('#themeBtn, #themeBtn2');
-    themeBtns.forEach(btn => {
-        if (btn) {
-            btn.innerHTML = document.body.classList.contains("dark") ?
-                '<i>🌙</i> 日间模式' :
-                '<i>☀️</i> 夜间模式';
+            perspective: 2000px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
         }
-    });<div class="slider" id="slider"></div>  <!-- gallery.html中缺少id="slider" -->
-<div class="grid-container" id="artGrid"></div>  <!-- gallery.html中缺少id="artGrid" -->
 
-}
-
-        .slider-3d {
+        /* 3D旋转舞台 */
+        .carousel-3d {
             position: relative;
-            width: 500px;
-            height: 700px;
+            width: 700px;
+            height: 500px;
             transform-style: preserve-3d;
+            transform: rotateX(10deg);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        /* 3D 图片卡片 - 空间堆叠 */
-        .slider-3d-item {
+
+        /* 3D卡片样式 */
+        .card-3d {
             position: absolute;
-            width: 100%;
-            height: 100%;
+            width: 400px;
+            height: 300px;
             border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
             overflow: hidden;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
-            backface-visibility: hidden;
-            /* 核心丝滑动画 */
-            transition: all 1s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .slider-3d-item img {
+
+        /* 悬停放大效果 */
+        .card-3d:hover {
+            transform: scale(1.1) translateY(-20px) !important;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+            z-index: 100 !important;
+        }
+
+        .card-3d img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            pointer-events: none;
+            transition: transform 0.3s ease;
         }
 
-        /* 3D 堆叠层级（纵深空间感） */
-        .slider-3d-item:nth-child(1) { transform: translateZ(0px) scale(1); opacity: 1; z-index: 10; }
-        .slider-3d-item:nth-child(2) { transform: translateZ(-120px) scale(0.9); opacity: 0.9; z-index: 9; }
-        .slider-3d-item:nth-child(3) { transform: translateZ(-240px) scale(0.8); opacity: 0.8; z-index: 8; }
-        .slider-3d-item:nth-child(4) { transform: translateZ(-360px) scale(0.7); opacity: 0.7; z-index: 7; }
-        .slider-3d-item:nth-child(n+5) { transform: translateZ(-480px) scale(0.6); opacity: 0.5; z-index: 6; }
+        .card-3d:hover img {
+            transform: scale(1.1);
+        }
 
-        /* ✅ 向下滚动：放大淡出动画 */
-        .slider-3d-item.fly-out {
-            transform: translateZ(800px) scale(2.5);
+        /* 卡片标题 */
+        .card-title {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
             opacity: 0;
-            pointer-events: none;
+            transition: opacity 0.3s ease;
         }
 
-        /* ✅ 向上滚动：缩小淡入动画 */
-        .slider-3d-item.fly-in {
-            transform: translateZ(0px) scale(1);
+        .card-3d:hover .card-title {
             opacity: 1;
         }
 
-        /* 移动端适配 */
-        @media (max-width: 767px) {
-            .slider-3d { width: 80vw; height: 60vh; }
-            .slider-3d-container { height: 90vh; }
-        }
-
-        /* 提示文字动画 */
-        .slider-tip {
+        /* 控制按钮 */
+        .controls {
             position: absolute;
-            bottom: 80px;
-            color: var(--text);
-            font-size: 16px;
-            text-align: center;
-            animation: tipFade 2s infinite alternate;
-        }
-        @keyframes tipFade {
-            from { opacity: 0.5; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
+            bottom: 100px;
+            display: flex;
+            gap: 20px;
+            z-index: 100;
         }
 
-        /* 3D 页面导航 */
+        .control-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        /* 导航栏 */
         .nav-3d {
             position: absolute;
             top: 20px;
             right: 20px;
             z-index: 200;
         }
+
         .nav-3d ul {
             list-style: none;
             display: flex;
@@ -113,21 +128,58 @@ function updateThemeButtonText() {
             margin: 0;
             padding: 0;
         }
-        .nav-3d a,
+
         .nav-3d button {
             color: white;
-            text-decoration: none;
-            padding: 10px 20px;
             background: rgba(0, 0, 0, 0.5);
             border: none;
+            padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.3s ease;
         }
-        .nav-3d a:hover,
-        .nav-3d button:hover,
-        .nav-3d a.active {
+
+        .nav-3d button:hover {
             background: rgba(0, 0, 0, 0.8);
+        }
+
+        /* 指示器 */
+        .indicator {
+            position: absolute;
+            bottom: 50px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .dot.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .carousel-3d {
+                width: 90vw;
+                height: 60vh;
+            }
+
+            .card-3d {
+                width: 80vw;
+                height: 50vh;
+            }
+
+            .controls {
+                bottom: 80px;
+            }
         }
     </style>
 </head>
@@ -139,10 +191,18 @@ function updateThemeButtonText() {
     </ul>
 </nav>
 
-<!-- 3D 堆叠滑块核心区域 -->
-<section class="slider-3d-container" id="slider3DContainer">
-    <div class="slider-3d" id="slider3D"></div>
-    <div class="slider-tip">Scroll Up / Down to Switch | Slide for Mobile</div>
+<!-- 3D 旋转画廊 -->
+<section class="gallery-3d-container">
+    <div class="carousel-3d" id="carousel3D"></div>
+
+    <!-- 控制按钮 -->
+    <div class="controls">
+        <button class="control-btn" id="prevBtn">←</button>
+        <button class="control-btn" id="nextBtn">→</button>
+    </div>
+
+    <!-- 指示器 -->
+    <div class="indicator" id="indicators"></div>
 </section>
 
 <footer>
@@ -156,96 +216,172 @@ function updateThemeButtonText() {
     </div>
 </footer>
 
-<script src="js/config.js"></script>
-<script src="js/main.js"></script>
+<script src="./js/config.js"></script>
+<script src="./js/main.js"></script>
 <script>
-    // ==================== 3D 滑块核心逻辑 ====================
+    // 等待DOM完全加载
     document.addEventListener('DOMContentLoaded', function() {
-        // 1. 截取 college 最后 15 张作品
-        const collegeWorks = artWorks.filter(item => item.type === 'college');
-        const last15CollegeWorks = collegeWorks.slice(-15);
-        const slider3D = document.getElementById('slider3D');
-        let currentIndex = 0;
+        // 获取DOM元素
+        const carousel = document.getElementById('carousel3D');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const indicatorsContainer = document.getElementById('indicators');
+
+        // 配置参数
+        const totalCards = 8; // 同时显示的卡片数量
+        const radius = 300; // 旋转半径
+        let currentAngle = 0;
         let isAnimating = false;
 
-        // 2. 渲染 3D 图片
-        function render3DSlider() {
-            if (!slider3D) return;
-            slider3D.innerHTML = '';
-            last15CollegeWorks.forEach((item) => {
-                const div = document.createElement('div');
-                div.className = 'slider-3d-item';
-                div.innerHTML = `<img src="${getImgSrc(item)}" alt="${item.name}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjEwMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSIxMDAwIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNDAwIiB5PSI1MDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzY2NiI+SW1hZ2UgTm90IEZvdW5kPC90ZXh0Pjwvc3ZnPg=='">`;
-                slider3D.appendChild(div);
+        // 筛选并获取最新的作品
+        const collegeWorks = artWorks.filter(item => item.type === 'college');
+        const recentWorks = collegeWorks.slice(-totalCards);
+
+        // 创建3D卡片
+        function createCard(work, index) {
+            const angle = (index * (360 / totalCards)) * Math.PI / 180;
+            const x = Math.sin(angle) * radius;
+            const z = Math.cos(angle) * radius;
+
+            const card = document.createElement('div');
+            card.className = 'card-3d';
+            card.style.transform = `translateX(${x}px) translateZ(${z}px)`;
+
+            // 使用相对路径确保图片正确加载
+            const imgSrc = work.src.startsWith('./') ? work.src : './' + work.src;
+            card.innerHTML = `
+                <img src="${imgSrc}.jpg" alt="${work.name}" onerror="this.outerHTML='<div class=\\'img-placeholder\\'><div>👽</div><div>Image Not Found</div></div>'">
+                <div class="card-title">${work.name}</div>
+            `;
+
+            // 点击卡片进入详情页
+            card.addEventListener('click', () => {
+                window.location.href = `detail.html?id=${work.id}`;
+            });
+
+            return card;
+        }
+
+        // 更新旋转角度（平滑过渡）
+        function updateCarousel(angle) {
+            if (isAnimating) return;
+            isAnimating = true;
+
+            // 应用新的变换
+            carousel.style.transform = `rotateX(10deg) rotateY(${-angle}deg)`;
+
+            // 延迟重置动画状态
+            setTimeout(() => {
+                isAnimating = false;
+            }, 500);
+        }
+
+        // 渲染3D画廊
+        function renderCarousel() {
+            carousel.innerHTML = '';
+            indicatorsContainer.innerHTML = '';
+
+            // 创建所有卡片
+            recentWorks.forEach((work, index) => {
+                const card = createCard(work, index);
+                carousel.appendChild(card);
+
+                // 创建指示器点
+                const dot = document.createElement('div');
+                dot.className = index === 0 ? 'dot active' : 'dot';
+                dot.dataset.index = index;
+                dot.addEventListener('click', () => {
+                    const targetIndex = parseInt(dot.dataset.index);
+                    currentAngle = targetIndex * (360 / totalCards);
+                    updateIndicators(targetIndex);
+                    updateCarousel(currentAngle);
+                });
+                indicatorsContainer.appendChild(dot);
+            });
+
+            updateIndicators(0);
+        }
+
+        // 更新指示器
+        function updateIndicators(activeIndex) {
+            document.querySelectorAll('.dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === activeIndex);
             });
         }
 
-        // 3. ✅ 下一张：放大淡出
-        function slideNext() {
-            if (isAnimating || !slider3D || currentIndex >= last15CollegeWorks.length - 1) return;
-            isAnimating = true;
-            const items = document.querySelectorAll('.slider-3d-item');
-            // 当前图片放大淡出
-            items[currentIndex].classList.add('fly-out');
+        // 事件处理
+        prevBtn.addEventListener('click', () => {
+            currentAngle -= 360 / totalCards;
+            updateCarousel(currentAngle);
+            const activeIndex = Math.abs(Math.round(currentAngle / (360 / totalCards))) % totalCards;
+            updateIndicators(activeIndex);
+        });
 
-            setTimeout(() => {
-                currentIndex++;
-                isAnimating = false;
-            }, 900);
-        }
+        nextBtn.addEventListener('click', () => {
+            currentAngle += 360 / totalCards;
+            updateCarousel(currentAngle);
+            const activeIndex = Math.abs(Math.round(currentAngle / (360 / totalCards))) % totalCards;
+            updateIndicators(activeIndex);
+        });
 
-        // 4. ✅ 上一张：缩小淡入
-        function slidePrev() {
-            if (isAnimating || !slider3D || currentIndex <= 0) return;
-            isAnimating = true;
-            currentIndex--;
-            const items = document.querySelectorAll('.slider-3d-item');
-            // 回归图片缩小淡入
-            items[currentIndex].classList.remove('fly-out');
+        // 键盘控制
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') prevBtn.click();
+            if (e.key === 'ArrowRight') nextBtn.click();
+        });
 
-            setTimeout(() => {
-                isAnimating = false;
-            }, 900);
-        }
+        // 触摸滑动控制
+        let touchStartX = 0;
+        let touchEndX = 0;
 
-        // 5. 桌面端：滚轮触发
-        const container = document.getElementById('slider3DContainer');
-        if (container) {
-            container.addEventListener('wheel', (e) => {
-                e.preventDefault(); // 禁止页面滚动
-                if (e.deltaY > 0) {
-                    slideNext();
+        carousel.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        carousel.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    nextBtn.click();
                 } else {
-                    slidePrev();
+                    prevBtn.click();
                 }
-            });
-        }
+            }
+        });
 
-        // 6. 移动端：滑动触发
-        let touchStartY = 0;
-        if (container) {
-            container.addEventListener('touchstart', (e) => {
-                touchStartY = e.changedTouches[0].screenY;
-            });
-            container.addEventListener('touchend', (e) => {
-                const touchEndY = e.changedTouches[0].screenY;
-                const diff = touchStartY - touchEndY;
-                if (diff > 50) slideNext();    // 上滑 → 下一张
-                if (diff < -50) slidePrev();   // 下滑 → 上一张
-            });
-        }
-
-        // 修复主题切换
+        // 主题切换
         const themeBtn = document.getElementById('themeBtn');
         if (themeBtn) {
             themeBtn.addEventListener("click", () => {
                 document.body.classList.toggle("dark");
                 localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+
+                // 更新按钮文本
+                updateThemeButtonText();
+            });
+        }
+
+        function updateThemeButtonText() {
+            const themeBtns = document.querySelectorAll('#themeBtn');
+            themeBtns.forEach(btn => {
+                if (btn) {
+                    btn.innerHTML = document.body.classList.contains("dark") ?
+                        '<i>🌙</i> 日间模式' :
+                        '<i>☀️</i> 夜间模式';
+                }
             });
         }
 
         // 初始化
-        render3DSlider();
+        renderCarousel();
+
+        // 应用保存的主题设置
+        if (localStorage.getItem("theme") === "dark") {
+            document.body.classList.add("dark");
+            updateThemeButtonText();
+        }
     });
 </script>
 </body>
