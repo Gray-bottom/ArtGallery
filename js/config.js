@@ -150,9 +150,10 @@ const artWorks = [
         name: "Middle School Works_17",
         type: "middle",
         src: "images/middle/middle_17",
-        desc: "Please fill in the work description",
+        desc: "Image resource missing - Please contact administrator",
         time: "XX/XX/20XX",
-        size: "W×H cm"
+        size: "W×H cm",
+        _missing: true  // 图片资源缺失标记
     },
     {
         id: 18,

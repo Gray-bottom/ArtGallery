@@ -3,19 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 移除base标签，使用相对路径 -->
-    <title>作品详情</title>
-    <link rel="stylesheet" href="./css/style.css">
+    <title>作品详情 - Asuka's Art Gallery</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* 详情页专属样式 */
+        .detail-page-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .detail-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 30px;
+            animation: fadeInUp 0.8s ease;
+        }
+        
+        .img-box {
+            position: relative;
+            text-align: center;
+            margin-bottom: 30px;
+            background: var(--card);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+        
+        .img-box img {
+            max-width: 100%;
+            max-height: 600px;
+            border-radius: 15px;
+            cursor: grab;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .img-box img:active {
+            cursor: grabbing;
+        }
+        
+        .img-box button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 22px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            z-index: 10;
+        }
+        
+        .img-box button:hover {
+            background: #fff;
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+        }
+        
+        #prevBtn { left: 20px; }
+        #nextBtn { right: 20px; }
+        
+        .info-box {
+            background: var(--card);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 20px 0;
+            text-align: left;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid var(--glass-border);
+        }
+        
+        .info-box h2 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+        
+        .info-box p {
+            font-size: 16px;
+            line-height: 1.8;
+            margin: 12px 0;
+            color: var(--text);
+        }
+        
+        .tool-box {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 25px 0;
+            justify-content: center;
+        }
+        
+        .tool-box button {
+            padding: 12px 24px;
+            border: none;
+            background: linear-gradient(135deg, #667eea, #f093fb);
+            color: #fff;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .tool-box button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+        }
+        
+        /* 评论区增强样式 */
+        .comment-box {
+            background: var(--card);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            margin-top: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid var(--glass-border);
+        }
+        
+        .comment-box h3 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .comment-box input, .comment-box textarea {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 12px;
+            border: 2px solid var(--glass-border);
+            background: var(--bg-solid);
+            color: var(--text);
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        
+        .comment-box input:focus, .comment-box textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .comment-box button {
+            background: linear-gradient(135deg, #667eea, #f093fb);
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .comment-box button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+        
+        .comment-box #commentList div {
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s;
+        }
+        
+        .comment-box #commentList div:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+    </style>
 </head>
 <body>
-<header>
-    <h1>作品详情</h1>
+<header class="detail-page-header">
     <nav>
         <ul>
-            <li><a href="./index.html">返回首页</a></li>
-            <li><a href="./gallery.html">作品展厅</a></li>
-            <li><a href="./index_3d.html">3D展示</a></li>
-            <li><button id="themeBtn">切换主题</button></li>
+            <li><a href="index.html">🏠 返回首页</a></li>
+            <li><a href="gallery.html">🎨 作品展厅</a></li>
+            <li><a href="index_3d.html">🎭 3D 展示</a></li>
+            <li><button id="themeBtn">☀️ 夜间模式</button></li>
         </ul>
     </nav>
 </header>
@@ -24,7 +213,7 @@
     <!-- 图片操作区 -->
     <div class="img-box">
         <button id="prevBtn">←</button>
-        <img id="detailImg" draggable="false">
+        <img id="detailImg" draggable="false" alt="Artwork Detail">
         <button id="nextBtn">→</button>
     </div>
 
@@ -33,27 +222,36 @@
 
     <!-- 操作按钮 -->
     <div class="tool-box">
-        <button id="fullscreen">全屏查看</button>
-        <button id="downloadBtn">下载作品（带水印）</button>
+        <button id="fullscreen">🖼️ 全屏查看</button>
+        <button id="downloadBtn">💾 下载作品（带水印）</button>
         <button id="likeBtn">👍 点赞</button>
         <button id="collectBtn">⭐ 收藏</button>
     </div>
 
     <!-- 评论区（非匿名） -->
     <div class="comment-box">
-        <h3>评论区</h3>
-        <input type="text" id="username" placeholder="请输入昵称（必填）" required>
-        <textarea id="commentContent" placeholder="说点什么..."></textarea>
-        <button id="submitComment">发布评论</button>
+        <h3>💬 评论区</h3>
+        <input type="text" id="username" placeholder="请输入您的昵称" required>
+        <textarea id="commentContent" placeholder="分享您对这幅作品的看法..." rows="4"></textarea>
+        <button id="submitComment">✨ 发布评论</button>
         <div id="commentList"></div>
     </div>
 </section>
 
 <footer>
-    <p>© 2026 我的美术作品 | 纯前端展示站</p>
+    <div class="footer-content">
+        <div class="footer-logo">🎨 Asuka's Art Portfolio</div>
+        <div class="footer-contact">
+            <div><i>💬</i> QQ: 1946620514</div>
+            <div><i>📧</i> Email: 23069100154@stu.xidian.edu.cn</div>
+        </div>
+        <div class="footer-copyright">
+            © 2026 All Rights Reserved | Personal Art Exhibition
+        </div>
+    </div>
 </footer>
 
-<script src="./js/config.js"></script>
-<script src="./js/main.js"></script>
+<script src="js/config.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>

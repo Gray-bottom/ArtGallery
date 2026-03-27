@@ -3,22 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 移除基础URL设置，使用相对路径 -->
-    <title>作品展示 - 我的美术作品集</title>
+    <title>作品展示 - Asuka's Art Gallery</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* 画廊页面专属样式 */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .gallery-page-nav {
+            background: var(--card);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 20px;
+            margin: 30px auto;
+            max-width: 1200px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .gallery-page-nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 0;
+            padding: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        @media (max-width: 768px) {
+            .gallery-page-nav ul {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 20px;
+                transform: translateY(-150%);
+                opacity: 0;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+                z-index: 999;
+            }
+            
+            body.dark .gallery-page-nav ul {
+                background: rgba(26, 26, 46, 0.98);
+            }
+            
+            .gallery-page-nav ul.active {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            
+            .gallery-page-nav ul li a,
+            .gallery-page-nav ul li button {
+                width: 100%;
+                background: rgba(102, 126, 234, 0.05);
+            }
+        }
+        
+        .slider-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 30px;
+            overflow: hidden;
+            border-radius: 20px;
+            position: relative;
+            aspect-ratio: 16/9;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            background: var(--card);
+            backdrop-filter: blur(10px);
+        }
+        
+        .slider {
+            display: flex;
+            height: 100%;
+            transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        
+        .slider img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            z-index: 10;
+            transition: all 0.3s;
+        }
+        
+        .slider-btn:hover {
+            background: #fff;
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+        }
+        
+        .slider-btn.prev { left: 20px; }
+        .slider-btn.next { right: 20px; }
+        
+        .gallery h2 {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 30px;
+            animation: fadeInUp 0.8s ease;
+        }
+    </style>
 </head>
 <body>
 <header>
-    <h1>个人美术作品展示</h1>
-    <nav>
-        <ul>
-            <li><a href="index.html">返回首页</a></li>
+    <button class="hamburger" id="hamburgerBtn" aria-label="菜单">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    <nav class="gallery-page-nav">
+        <ul id="navMenu">
+            <li><a href="index.html">🏠 返回首页</a></li>
+            <li><a href="gallery.html" class="active">🎨 作品展厅</a></li>
+            <li><a href="index_3d.html">🎭 3D 展示</a></li>
             <li><button class="tab-btn active" data-tab="middle">high school level</button></li>
             <li><button class="tab-btn" data-tab="college">college level</button></li>
-            <li><button id="themeBtn">切换主题</button></li>
+            <li><button id="themeBtn">☀️ 夜间模式</button></li>
         </ul>
     </nav>
 </header>
+
+<!-- 浮动装饰气泡 -->
+<div id="floatingBubbles" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0;"></div>
 
 <!-- 轮播图 -->
 <section class="slider-container">
@@ -29,13 +161,13 @@
 
 <!-- 作品列表 -->
 <section class="gallery">
-    <h2>作品展示</h2>
+    <h2>🎨 精选作品展示</h2>
     <div class="grid-container" id="artGrid"></div>
 </section>
 
 <footer>
     <div class="footer-content">
-        <div class="footer-logo">🎨 Asuka's Copy Painting Portfolio</div>
+        <div class="footer-logo">🎨 Asuka's Art Portfolio</div>
         <div class="footer-contact">
             <div><i>💬</i> QQ: 1946620514</div>
             <div><i>📧</i> Email: 23069100154@stu.xidian.edu.cn</div>
@@ -48,5 +180,15 @@
 
 <script src="js/config.js"></script>
 <script src="js/main.js"></script>
+<script>
+    // 汉堡菜单
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navMenu = document.getElementById('navMenu');
+    
+    hamburgerBtn?.addEventListener('click', () => {
+        hamburgerBtn.classList.toggle('active');
+        navMenu.classList.toggle('active');
+    });
+</script>
 </body>
 </html>

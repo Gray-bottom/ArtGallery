@@ -3,182 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asuka's 3D Art Gallery</title>
-    <link rel="stylesheet" href="./css/style.css">
+    <title>Asuka's 3D Art Gallery - 沉浸式艺术体验</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- 引入 Three.js 实现真 3D 效果 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        /* 全屏3D画廊容器 */
-        .gallery-3d-container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            perspective: 2000px;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        }
-
-        /* 3D旋转舞台 */
-        .carousel-3d {
-            position: relative;
-            width: 700px;
-            height: 500px;
-            transform-style: preserve-3d;
-            transform: rotateX(10deg);
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        /* 3D卡片样式 */
-        .card-3d {
-            position: absolute;
-            width: 400px;
-            height: 300px;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            overflow: hidden;
-            cursor: pointer;
-            transform-style: preserve-3d;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        /* 悬停放大效果 */
-        .card-3d:hover {
-            transform: scale(1.1) translateY(-20px) !important;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
-            z-index: 100 !important;
-        }
-
-        .card-3d img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-
-        .card-3d:hover img {
-            transform: scale(1.1);
-        }
-
-        /* 卡片标题 */
-        .card-title {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .card-3d:hover .card-title {
-            opacity: 1;
-        }
-
-        /* 控制按钮 */
-        .controls {
-            position: absolute;
-            bottom: 100px;
-            display: flex;
-            gap: 20px;
-            z-index: 100;
-        }
-
-        .control-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .control-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.1);
-        }
-
-        /* 导航栏 */
+        /* 3D 页面导航 - 玻璃态设计 */
         .nav-3d {
-            position: absolute;
+            position: fixed;
             top: 20px;
-            right: 20px;
-            z-index: 200;
+            left: 20px;
+            right: auto;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
         }
-
+        
+        body.dark .nav-3d {
+            background: rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        
         .nav-3d ul {
             list-style: none;
             display: flex;
-            gap: 15px;
+            gap: 12px;
             margin: 0;
             padding: 0;
+            align-items: center;
         }
-
+        
+        .nav-3d a,
         .nav-3d button {
             color: white;
-            background: rgba(0, 0, 0, 0.5);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            text-decoration: none;
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: all 0.3s;
+            font-weight: 500;
+            font-size: 14px;
         }
-
+        
+        .nav-3d a:hover,
         .nav-3d button:hover {
-            background: rgba(0, 0, 0, 0.8);
+            background: linear-gradient(135deg, #667eea, #f093fb);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
         }
-
-        /* 指示器 */
-        .indicator {
-            position: absolute;
-            bottom: 50px;
-            display: flex;
-            gap: 8px;
-        }
-
-        .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transition: all 0.3s ease;
+        
+        /* 汉堡菜单按钮 */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            background: transparent;
+            border: none;
             cursor: pointer;
+            padding: 8px;
+            z-index: 1001;
         }
-
-        .dot.active {
+        
+        .hamburger span {
+            width: 25px;
+            height: 3px;
             background: white;
-            transform: scale(1.2);
+            margin: 3px 0;
+            border-radius: 3px;
+            transition: all 0.3s ease;
         }
-
-        /* 移动端适配 */
+        
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+        
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+        
+        /* 移动端菜单 */
         @media (max-width: 768px) {
-            .carousel-3d {
-                width: 90vw;
-                height: 60vh;
+            .hamburger {
+                display: flex;
             }
-
-            .card-3d {
-                width: 80vw;
-                height: 50vh;
+            
+            .nav-3d ul {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 20px;
+                gap: 10px;
+                transform: translateY(-150%);
+                opacity: 0;
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             }
-
-            .controls {
-                bottom: 80px;
+            
+            body.dark .nav-3d ul {
+                background: rgba(26, 26, 46, 0.98);
+            }
+            
+            .nav-3d ul.active {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            
+            .nav-3d a,
+            .nav-3d button {
+                width: 100%;
+                text-align: center;
+                background: rgba(102, 126, 234, 0.1);
+                color: #333;
+            }
+            
+            body.dark .nav-3d a,
+            body.dark .nav-3d button {
+                color: white;
             }
         }
     </style>
@@ -186,202 +140,326 @@
 <body>
 <!-- 3D 页面导航 -->
 <nav class="nav-3d">
-    <ul>
-        <li><button id="themeBtn">切换主题</button></li>
+    <button class="hamburger" id="hamburgerBtn" aria-label="菜单">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    <ul id="navMenu">
+        <li><a href="index.html">🏠 返回首页</a></li>
+        <li><a href="gallery.html">🎨 作品展厅</a></li>
+        <li><a href="index_3d.html" class="active">🎭 3D 展示</a></li>
+        <li><button id="themeBtn">☀️ 夜间模式</button></li>
     </ul>
 </nav>
 
-<!-- 3D 旋转画廊 -->
-<section class="gallery-3d-container">
-    <div class="carousel-3d" id="carousel3D"></div>
+<!-- 3D 展示容器 - 圆形旋转木马 -->
+<div id="canvas-container" style="width: 100vw; height: 100vh; overflow: hidden; cursor: grab; user-select: none;"></div>
 
-    <!-- 控制按钮 -->
-    <div class="controls">
-        <button class="control-btn" id="prevBtn">←</button>
-        <button class="control-btn" id="nextBtn">→</button>
-    </div>
+<!-- 加载指示器 -->
+<div id="loader" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 999;">
+    <div style="width: 60px; height: 60px; border: 4px solid rgba(255,255,255,0.3); border-top-color: #667eea; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+    <p style="color: white; margin-top: 15px; font-size: 16px; font-weight: 600;">Loading 3D Gallery...</p>
+</div>
 
-    <!-- 指示器 -->
-    <div class="indicator" id="indicators"></div>
-</section>
+<!-- 控制提示 -->
+<div id="controls-hint" style="position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); color: white; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); padding: 15px 30px; border-radius: 30px; font-size: 14px; z-index: 999; animation: fadeInUp 0.5s ease 1s both;">
+    <span style="margin-right: 20px;">🖱️ 拖拽旋转</span>
+    <span style="margin-right: 20px;">🔍 滚轮缩放</span>
+    <span>👆 点击查看详情</span>
+</div>
+
+<style>
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+</style>
 
 <footer>
     <div class="footer-content">
-        <div class="footer-logo">🎨 Asuka's Copy Painting Portfolio</div>
+        <div class="footer-logo">🎨 Asuka's Art Portfolio</div>
         <div class="footer-contact">
             <div><i>💬</i> QQ: 1946620514</div>
             <div><i>📧</i> Email: 23069100154@stu.xidian.edu.cn</div>
         </div>
-        <div class="footer-copyright">© 2026 All Rights Reserved</div>
+        <div class="footer-copyright">© 2026 All Rights Reserved | Personal Art Exhibition</div>
     </div>
 </footer>
 
-<script src="./js/config.js"></script>
-<script src="./js/main.js"></script>
+<script src="js/config.js"></script>
+<script src="js/main.js"></script>
 <script>
-    // 等待DOM完全加载
-    document.addEventListener('DOMContentLoaded', function() {
-        // 获取DOM元素
-        const carousel = document.getElementById('carousel3D');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const indicatorsContainer = document.getElementById('indicators');
-
-        // 配置参数
-        const totalCards = 8; // 同时显示的卡片数量
-        const radius = 300; // 旋转半径
-        let currentAngle = 0;
-        let isAnimating = false;
-
-        // 筛选并获取最新的作品
+    // ==================== Three.js 圆形旋转木马画廊 ====================
+    let scene, camera, renderer, cards = [];
+    let currentRotation = 0;
+    let targetRotation = 0;
+    let isDragging = false;
+    let previousMousePosition = { x: 0 };
+    let autoRotate = true;
+    let zoomLevel = 1;
+    
+    // 等待 DOM 加载完成
+    document.addEventListener('DOMContentLoaded', () => {
         const collegeWorks = artWorks.filter(item => item.type === 'college');
-        const recentWorks = collegeWorks.slice(-totalCards);
-
-        // 创建3D卡片
-        function createCard(work, index) {
-            const angle = (index * (360 / totalCards)) * Math.PI / 180;
-            const x = Math.sin(angle) * radius;
-            const z = Math.cos(angle) * radius;
-
-            const card = document.createElement('div');
-            card.className = 'card-3d';
-            card.style.transform = `translateX(${x}px) translateZ(${z}px)`;
-
-            // 使用相对路径确保图片正确加载
-            const imgSrc = work.src.startsWith('./') ? work.src : './' + work.src;
-            card.innerHTML = `
-                <img src="${imgSrc}.jpg" alt="${work.name}" onerror="this.outerHTML='<div class=\\'img-placeholder\\'><div>👽</div><div>Image Not Found</div></div>'">
-                <div class="card-title">${work.name}</div>
-            `;
-
-            // 点击卡片进入详情页
-            card.addEventListener('click', () => {
-                window.location.href = `detail.html?id=${work.id}`;
-            });
-
-            return card;
+        const last15CollegeWorks = collegeWorks.slice(-15);
+        
+        // 检查容器是否存在
+        const container = document.getElementById('canvas-container');
+        if (!container) {
+            console.error('canvas-container not found!');
+            return;
         }
-
-        // 更新旋转角度（平滑过渡）
-        function updateCarousel(angle) {
-            if (isAnimating) return;
-            isAnimating = true;
-
-            // 应用新的变换
-            carousel.style.transform = `rotateX(10deg) rotateY(${-angle}deg)`;
-
-            // 延迟重置动画状态
-            setTimeout(() => {
-                isAnimating = false;
-            }, 500);
+        
+        // 引入 GSAP 动画库
+        const gsapScript = document.createElement('script');
+        gsapScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js';
+        gsapScript.onload = () => {
+            console.log('GSAP loaded, initializing 3D carousel...');
+            init();
+        };
+        document.head.appendChild(gsapScript);
+        
+        // 初始化场景
+        function init() {
+            try {
+                // 创建场景
+                scene = new THREE.Scene();
+                
+                // 创建相机
+                camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                camera.position.z = 800;
+                camera.position.y = 0;
+                
+                // 创建渲染器
+                renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setPixelRatio(window.devicePixelRatio);
+                container.appendChild(renderer.domElement);
+                
+                // 添加环境光
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+                scene.add(ambientLight);
+                
+                // 添加点光源
+                const pointLight = new THREE.PointLight(0xffffff, 0.8);
+                pointLight.position.set(100, 100, 100);
+                scene.add(pointLight);
+                
+                // 创建 3D 卡片（圆形排列）
+                createCards(last15CollegeWorks);
+                
+                // 隐藏加载指示器
+                setTimeout(() => {
+                    const loader = document.getElementById('loader');
+                    if (loader) loader.style.display = 'none';
+                }, 1000);
+                
+                // 开始动画循环
+                animate();
+                
+                console.log('3D carousel initialized successfully!');
+            } catch (error) {
+                console.error('Error initializing 3D carousel:', error);
+                document.getElementById('loader').innerHTML = '<p style="color: red;">加载失败：' + error.message + '</p>';
+            }
         }
-
-        // 渲染3D画廊
-        function renderCarousel() {
-            carousel.innerHTML = '';
-            indicatorsContainer.innerHTML = '';
-
-            // 创建所有卡片
-            recentWorks.forEach((work, index) => {
-                const card = createCard(work, index);
-                carousel.appendChild(card);
-
-                // 创建指示器点
-                const dot = document.createElement('div');
-                dot.className = index === 0 ? 'dot active' : 'dot';
-                dot.dataset.index = index;
-                dot.addEventListener('click', () => {
-                    const targetIndex = parseInt(dot.dataset.index);
-                    currentAngle = targetIndex * (360 / totalCards);
-                    updateIndicators(targetIndex);
-                    updateCarousel(currentAngle);
+        
+        // 创建 3D 卡片 - 圆形排列
+        function createCards(works) {
+            const cardWidth = 300;
+            const cardHeight = 420;
+            const radius = 600; // 圆形半径
+            const centerX = 0;
+            const centerY = 0;
+            const angleStep = (2 * Math.PI) / works.length;
+            
+            works.forEach((item, index) => {
+                const geometry = new THREE.PlaneGeometry(cardWidth, cardHeight);
+                
+                // 加载纹理
+                const textureLoader = new THREE.TextureLoader();
+                const texture = textureLoader.load(getImgSrc(item));
+                
+                const material = new THREE.MeshPhongMaterial({ 
+                    map: texture,
+                    side: THREE.DoubleSide,
+                    transparent: true,
+                    opacity: 0.9
                 });
-                indicatorsContainer.appendChild(dot);
+                
+                const card = new THREE.Mesh(geometry, material);
+                
+                // 计算圆形位置
+                const angle = index * angleStep;
+                const x = centerX + Math.cos(angle) * radius;
+                const z = Math.sin(angle) * radius;
+                
+                card.position.set(x, centerY, z);
+                
+                // 旋转让卡片面向圆心
+                card.rotation.y = -angle + Math.PI / 2;
+                
+                // 存储作品信息
+                card.userData = { 
+                    id: item.id, 
+                    name: item.name,
+                    originalAngle: angle
+                };
+                
+                scene.add(card);
+                cards.push(card);
             });
-
-            updateIndicators(0);
+            
+            // 设置初始视角，让第一张卡片正对观众
+            targetRotation = 0;
         }
-
-        // 更新指示器
-        function updateIndicators(activeIndex) {
-            document.querySelectorAll('.dot').forEach((dot, index) => {
-                dot.classList.toggle('active', index === activeIndex);
+        
+        // 动画循环
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // 平滑旋转
+            if (!isDragging && autoRotate) {
+                targetRotation += 0.002; // 缓慢自动旋转
+            }
+            
+            // 插值平滑
+            currentRotation += (targetRotation - currentRotation) * 0.1;
+            
+            // 旋转整个卡片组
+            cards.forEach((card, i) => {
+                const angle = card.userData.originalAngle + currentRotation;
+                const radius = 600;
+                card.position.x = Math.cos(angle) * radius;
+                card.position.z = Math.sin(angle) * radius;
+                card.rotation.y = -angle + Math.PI / 2;
+                
+                // 轻微波动效果
+                card.position.y = Math.sin(Date.now() * 0.001 + i) * 5;
             });
+            
+            renderer.render(scene, camera);
         }
-
-        // 事件处理
-        prevBtn.addEventListener('click', () => {
-            currentAngle -= 360 / totalCards;
-            updateCarousel(currentAngle);
-            const activeIndex = Math.abs(Math.round(currentAngle / (360 / totalCards))) % totalCards;
-            updateIndicators(activeIndex);
+        
+        // 鼠标拖拽控制
+        container.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            autoRotate = false; // 拖拽时停止自动旋转
+            previousMousePosition = { x: e.clientX };
+            container.style.cursor = 'grabbing';
         });
-
-        nextBtn.addEventListener('click', () => {
-            currentAngle += 360 / totalCards;
-            updateCarousel(currentAngle);
-            const activeIndex = Math.abs(Math.round(currentAngle / (360 / totalCards))) % totalCards;
-            updateIndicators(activeIndex);
+        
+        container.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            
+            const deltaX = e.clientX - previousMousePosition.x;
+            targetRotation += deltaX * 0.005;
+            previousMousePosition = { x: e.clientX };
         });
-
-        // 键盘控制
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') prevBtn.click();
-            if (e.key === 'ArrowRight') nextBtn.click();
-        });
-
-        // 触摸滑动控制
-        let touchStartX = 0;
-        let touchEndX = 0;
-
-        carousel.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-        });
-
-        carousel.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            const diff = touchStartX - touchEndX;
-
-            if (Math.abs(diff) > 50) {
-                if (diff > 0) {
-                    nextBtn.click();
-                } else {
-                    prevBtn.click();
+        
+        container.addEventListener('mouseup', () => {
+            isDragging = false;
+            container.style.cursor = 'grab';
+            
+            // 3 秒后恢复自动旋转
+            setTimeout(() => {
+                if (!isDragging) {
+                    autoRotate = true;
                 }
+            }, 3000);
+        });
+        
+        container.addEventListener('mouseleave', () => {
+            isDragging = false;
+            container.style.cursor = 'grab';
+        });
+        
+        // 触摸支持（移动端）
+        container.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            autoRotate = false;
+            previousMousePosition = { x: e.touches[0].clientX };
+        });
+        
+        container.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            const deltaX = e.touches[0].clientX - previousMousePosition.x;
+            targetRotation += deltaX * 0.005;
+            previousMousePosition = { x: e.touches[0].clientX };
+        });
+        
+        container.addEventListener('touchend', () => {
+            isDragging = false;
+            setTimeout(() => {
+                if (!isDragging) autoRotate = true;
+            }, 3000);
+        });
+        
+        // 滚轮缩放
+        container.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const zoomSpeed = 0.001;
+            zoomLevel -= e.deltaY * zoomSpeed;
+            zoomLevel = Math.max(0.5, Math.min(2, zoomLevel)); // 限制缩放范围
+            
+            gsap.to(camera.position, {
+                z: 800 / zoomLevel,
+                duration: 0.5,
+                ease: "power2.out"
+            });
+        }, { passive: false });
+        
+        // 点击卡片跳转详情
+        container.addEventListener('click', (event) => {
+            if (isDragging) return; // 拖拽时不触发点击
+            
+            const mouse = new THREE.Vector2();
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            
+            const raycaster = new THREE.Raycaster();
+            raycaster.setFromCamera(mouse, camera);
+            
+            const intersects = raycaster.intersectObjects(cards);
+            
+            if (intersects.length > 0) {
+                const card = intersects[0].object;
+                window.location.href = `detail.html?id=${card.userData.id}`;
             }
         });
-
+        
+        // 窗口大小调整
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
         // 主题切换
         const themeBtn = document.getElementById('themeBtn');
-        if (themeBtn) {
-            themeBtn.addEventListener("click", () => {
-                document.body.classList.toggle("dark");
-                localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
-
-                // 更新按钮文本
-                updateThemeButtonText();
-            });
-        }
-
-        function updateThemeButtonText() {
-            const themeBtns = document.querySelectorAll('#themeBtn');
-            themeBtns.forEach(btn => {
-                if (btn) {
-                    btn.innerHTML = document.body.classList.contains("dark") ?
-                        '<i>🌙</i> 日间模式' :
-                        '<i>☀️</i> 夜间模式';
-                }
-            });
-        }
-
-        // 初始化
-        renderCarousel();
-
-        // 应用保存的主题设置
-        if (localStorage.getItem("theme") === "dark") {
-            document.body.classList.add("dark");
-            updateThemeButtonText();
-        }
+        themeBtn?.addEventListener("click", () => {
+            document.body.classList.toggle("dark");
+            localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+        });
+        
+        // 汉堡菜单
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const navMenu = document.getElementById('navMenu');
+        
+        hamburgerBtn?.addEventListener('click', () => {
+            hamburgerBtn.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
     });
 </script>
 </body>
