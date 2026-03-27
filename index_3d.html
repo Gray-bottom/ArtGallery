@@ -169,6 +169,58 @@
     <span>✨ 欣赏作品</span>
 </div>
 
+<!-- 四角装饰光效 -->
+<div style="position: fixed; top: -200px; left: -200px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(102, 126, 234, 0.3) 0%, transparent 70%); border-radius: 50%; pointer-events: none; z-index: 2; filter: blur(40px);"></div>
+<div style="position: fixed; top: -200px; right: -200px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(240, 147, 251, 0.3) 0%, transparent 70%); border-radius: 50%; pointer-events: none; z-index: 2; filter: blur(40px);"></div>
+<div style="position: fixed; bottom: -200px; left: -200px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(102, 126, 234, 0.3) 0%, transparent 70%); border-radius: 50%; pointer-events: none; z-index: 2; filter: blur(40px);"></div>
+<div style="position: fixed; bottom: -200px; right: -200px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(240, 147, 251, 0.3) 0%, transparent 70%); border-radius: 50%; pointer-events: none; z-index: 2; filter: blur(40px);"></div>
+
+<!-- 角落几何装饰（2025 流行趋势） -->
+<div style="position: fixed; top: 30px; left: 30px; width: 60px; height: 60px; border-top: 2px solid rgba(102, 126, 234, 0.6); border-left: 2px solid rgba(102, 126, 234, 0.6); transform: rotate(-45deg); z-index: 999; pointer-events: none;"></div>
+<div style="position: fixed; top: 30px; right: 30px; width: 60px; height: 60px; border-top: 2px solid rgba(240, 147, 251, 0.6); border-right: 2px solid rgba(240, 147, 251, 0.6); transform: rotate(45deg); z-index: 999; pointer-events: none;"></div>
+<div style="position: fixed; bottom: 30px; left: 30px; width: 60px; height: 60px; border-bottom: 2px solid rgba(240, 147, 251, 0.6); border-left: 2px solid rgba(240, 147, 251, 0.6); transform: rotate(45deg); z-index: 999; pointer-events: none;"></div>
+<div style="position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-bottom: 2px solid rgba(102, 126, 234, 0.6); border-right: 2px solid rgba(102, 126, 234, 0.6); transform: rotate(-45deg); z-index: 999; pointer-events: none;"></div>
+
+<!-- 浮动装饰线条 -->
+<div style="position: fixed; top: 20%; left: 5%; width: 2px; height: 200px; background: linear-gradient(to bottom, transparent, rgba(102, 126, 234, 0.6), transparent); pointer-events: none; z-index: 2;"></div>
+<div style="position: fixed; top: 30%; right: 8%; width: 2px; height: 150px; background: linear-gradient(to bottom, transparent, rgba(240, 147, 251, 0.6), transparent); pointer-events: none; z-index: 2;"></div>
+<div style="position: fixed; bottom: 25%; left: 10%; width: 2px; height: 180px; background: linear-gradient(to bottom, transparent, rgba(102, 126, 234, 0.6), transparent); pointer-events: none; z-index: 2;"></div>
+
+<!-- 玻璃态信息面板（2025 流行趋势） -->
+<div style="position: fixed; bottom: 100px; left: 30px; padding: 20px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 40px rgba(0,0,0,0.3); color: white; z-index: 999; max-width: 250px; animation: panelFloat 6s ease-in-out infinite;">
+    <div style="font-size: 12px; opacity: 0.8; margin-bottom: 10px;">🎨 3D Art Gallery</div>
+    <div style="font-size: 11px; opacity: 0.6; line-height: 1.6;">Interactive Exhibition<br/>College Level Collection<br/>Powered by Three.js</div>
+    <div style="margin-top: 15px; display: flex; gap: 10px; align-items: center;">
+        <div style="width: 8px; height: 8px; background: #667eea; border-radius: 50%; animation: blink 2s infinite;"></div>
+        <span style="font-size: 10px; opacity: 0.7;">Live Preview</span>
+    </div>
+</div>
+
+<!-- 装饰性光晕 -->
+<div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 800px; height: 800px; background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%); border-radius: 50%; pointer-events: none; z-index: 1; animation: pulse 8s infinite ease-in-out;"></div>
+
+<!-- 动态几何线条（2025 流行趋势） -->
+<svg style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; opacity: 0.3;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="lineGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#667eea;stop-opacity:0" />
+            <stop offset="50%" style="stop-color:#667eea;stop-opacity:0.6" />
+            <stop offset="100%" style="stop-color:#f093fb;stop-opacity:0" />
+        </linearGradient>
+        <linearGradient id="lineGradient2" x1="100%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#f093fb;stop-opacity:0" />
+            <stop offset="50%" style="stop-color:#f093fb;stop-opacity:0.5" />
+            <stop offset="100%" style="stop-color:#667eea;stop-opacity:0" />
+        </linearGradient>
+    </defs>
+    <!-- 对角线装饰 -->
+    <line x1="0" y1="0" x2="100%" y2="100%" stroke="url(#lineGradient1)" stroke-width="1" style="animation: lineFlow 15s linear infinite;"/>
+    <line x1="100%" y1="0" x2="0" y2="100%" stroke="url(#lineGradient2)" stroke-width="1" style="animation: lineFlow 20s linear infinite reverse;"/>
+    <!-- 圆形装饰 -->
+    <circle cx="50%" cy="50%" r="30%" fill="none" stroke="rgba(102, 126, 234, 0.2)" stroke-width="0.5" style="animation: circleRotate 30s linear infinite;"/>
+    <circle cx="50%" cy="50%" r="40%" fill="none" stroke="rgba(240, 147, 251, 0.15)" stroke-width="0.5" style="animation: circleRotate 40s linear infinite reverse;"/>
+</svg>
+
 <style>
 @keyframes spin {
     to { transform: rotate(360deg); }
@@ -181,6 +233,52 @@
     to {
         opacity: 1;
         transform: translateX(-50%) translateY(0);
+    }
+}
+@keyframes pulse {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0.8;
+    }
+}
+@keyframes lineFlow {
+    0% {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+    }
+    100% {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 0;
+    }
+}
+@keyframes circleRotate {
+    from {
+        transform: rotate(0deg);
+        transform-origin: center;
+    }
+    to {
+        transform: rotate(360deg);
+        transform-origin: center;
+    }
+}
+@keyframes panelFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.3;
     }
 }
 </style>
@@ -211,7 +309,12 @@
     // 等待 DOM 加载完成
     document.addEventListener('DOMContentLoaded', () => {
         const collegeWorks = artWorks.filter(item => item.type === 'college');
-        const last15CollegeWorks = collegeWorks.slice(-15);
+        
+        // 选择指定索引的作品（索引从 0 开始）：第 9、15、17、18、19、27、29、36 张
+        const selectedIndices = [8, 14, 16, 17, 18, 26, 28, 35];
+        const selectedWorks = selectedIndices.map(index => collegeWorks[index]).filter(item => item !== undefined);
+        
+        console.log(`Selected ${selectedWorks.length} works from college collection:`, selectedWorks);
         
         // 检查容器是否存在
         const container = document.getElementById('canvas-container');
@@ -237,7 +340,7 @@
                 
                 // 创建相机
                 camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-                camera.position.z = 1200; // 增大初始距离，让卡片看起来更小 (原 800)
+                camera.position.z = 1100; // 减小相机距离，匹配更小的半径 (原 1600)
                 camera.position.y = 0;
                 
                 // 创建渲染器
@@ -256,7 +359,7 @@
                 scene.add(pointLight);
                 
                 // 创建 3D 卡片（圆形排列）
-                createCards(last15CollegeWorks);
+                createCards(selectedWorks);
                 
                 // 隐藏加载指示器
                 setTimeout(() => {
@@ -276,7 +379,7 @@
         
         // 创建 3D 卡片 - 圆形排列
         function createCards(works) {
-            const radius = 900; // 进一步增大圆形半径，防止重叠 (原 700)
+            const radius = 800; // 减小半径，让间距更紧凑 (原 1200)
             const centerX = 0;
             const centerY = 0;
             const angleStep = (2 * Math.PI) / works.length;
@@ -304,22 +407,22 @@
                     
                     // 根据图片类型自动适配
                     if (imageAspect > 1) {
-                        // 横图：限制宽度，高度自适应（减小尺寸）
-                        finalWidth = baseWidth * 0.9; // 横图缩小
+                        // 横图：限制宽度，高度自适应（增大幅度）
+                        finalWidth = baseWidth * 1.1;
                         finalHeight = finalWidth / imageAspect;
                     } else if (imageAspect < 0.7) {
-                        // 很窄的竖图：限制高度，宽度自适应（减小尺寸）
-                        finalHeight = baseHeight * 1.0; // 竖图缩小
+                        // 很窄的竖图：限制高度，宽度自适应（增大幅度）
+                        finalHeight = baseHeight * 1.0;
                         finalWidth = finalHeight * imageAspect;
                     } else {
-                        // 普通竖图或接近正方形（减小尺寸）
-                        finalHeight = baseHeight * 0.85; // 整体缩小
+                        // 普通竖图或接近正方形（增大）
+                        finalHeight = baseHeight * 0.95;
                         finalWidth = finalHeight * imageAspect;
                     }
                     
-                    // 限制最大和最小尺寸（缩小范围）
-                    finalWidth = Math.max(200, Math.min(380, finalWidth));
-                    finalHeight = Math.max(280, Math.min(480, finalHeight));
+                    // 限制最大和最小尺寸（增大范围）
+                    finalWidth = Math.max(220, Math.min(400, finalWidth));
+                    finalHeight = Math.max(300, Math.min(480, finalHeight));
                     
                     // 更新几何体
                     card.geometry.dispose();
@@ -336,7 +439,9 @@
                     map: texture,
                     side: THREE.DoubleSide,
                     transparent: true,
-                    opacity: 0.95
+                    opacity: 0.95,
+                    shininess: 50,
+                    specular: 0x667eea // 添加高光颜色（紫色反光）
                 });
                 
                 const card = new THREE.Mesh(geometry, material);
@@ -452,10 +557,10 @@
             e.preventDefault();
             const zoomSpeed = 0.001;
             zoomLevel -= e.deltaY * zoomSpeed;
-            zoomLevel = Math.max(0.8, Math.min(1.5, zoomLevel)); // 限制缩放范围，防止消失 (原 0.5-2)
+            zoomLevel = Math.max(0.6, Math.min(1.6, zoomLevel)); // 调整缩放范围匹配新半径
             
             gsap.to(camera.position, {
-                z: 1200 / zoomLevel, // 使用新的初始距离
+                z: 1100 / zoomLevel, // 使用新的初始距离
                 duration: 0.5,
                 ease: "power2.out"
             });
