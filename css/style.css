@@ -425,22 +425,127 @@ nav a.active::after {
     text-align: center;
 }
 
-/* 移除原有的重复样式 */
-.nav-overlay a,
-.nav-overlay button {
-    color: white;
-    text-decoration: none;
-    padding: 10px 20px;
-    background: rgba(0, 0, 0, 0.5);
+/* 首页“进入作品展厅”按钮 - 完整样式 */
+.enter-gallery-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 18px 50px;
+    font-size: 20px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #667eea, #f093fb);
+    color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: 50px;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+    z-index: 20;
 }
 
-.nav-overlay a:hover,
-.nav-overlay button:hover {
-    background: rgba(0, 0, 0, 0.8);
+.immersive-container:hover .enter-gallery-btn {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.enter-gallery-btn:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 15px 60px rgba(102, 126, 234, 0.6);
+}
+
+/* 画廊导航栏容器样式（所有页面统一） */
+.gallery-page-nav {
+    background: var(--card);
+    backdrop-filter: blur(10px);
+    padding: 25px;
+    border-radius: 20px;
+    margin: 30px auto;
+    max-width: 1200px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.gallery-page-nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* 移动端导航菜单下拉展开 */
+@media (max-width: 768px) {
+    .gallery-page-nav ul {
+        position: fixed;
+        top: 80px;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        padding: 20px;
+        transform: translateY(-150%);
+        opacity: 0;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        z-index: 999;
+    }
+    
+    body.dark .gallery-page-nav ul {
+        background: rgba(26, 26, 46, 0.98);
+    }
+    
+    .gallery-page-nav ul.active {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    
+    .gallery-page-nav ul li a,
+    .gallery-page-nav ul li button {
+        width: 100%;
+        background: rgba(102, 126, 234, 0.05);
+    }
+}
+
+/* 所有导航按钮统一样式 */
+.gallery-page-nav a,
+.gallery-page-nav button,
+.tab-btn {
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    text-decoration: none;
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    line-height: 1.5;
+}
+
+.gallery-page-nav a:hover,
+.gallery-page-nav button:hover,
+.tab-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.gallery-page-nav a.active,
+.gallery-page-nav button.active,
+.tab-btn.active {
+    background: linear-gradient(135deg, #667eea, #f093fb);
+    border-color: transparent;
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
 }
 
 /* 响应式优化 + 汉堡菜单 */
@@ -484,10 +589,12 @@ nav a.active::after {
         opacity: 1;
     }
     
-    nav a, nav button, .tab-btn {
+    /* 移动端导航按钮全宽显示 */
+    .gallery-page-nav ul li a,
+    .gallery-page-nav ul li button,
+    .gallery-page-nav .tab-btn {
         width: 100%;
         text-align: center;
-        background: rgba(102, 126, 234, 0.05);
     }
     
     .gallery {
@@ -513,6 +620,7 @@ nav a.active::after {
         font-size: 2em !important;
     }
     
+    /* 移动端按钮样式调整 */
     .enter-gallery-btn {
         padding: 15px 35px !important;
         font-size: 16px !important;
